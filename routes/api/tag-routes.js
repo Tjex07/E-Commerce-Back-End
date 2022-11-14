@@ -63,15 +63,17 @@ router.put('/:id', async (req, res) => {
 // updates a tag by appending its `id` value
 
 router.delete('/:id', async (req, res) => {
-
-  const tagData = await Tag.delete({
+const tagData = await Tag.delete({
     where: {
       id: req.params.id,
     }
-      .then((tagData) => res.status(200).json(tagData))
+  })
+    .then((tagData) => {
+      console.log(tagData);
+      res.json(tagData);
   })
 
-    .catch((error) => res.status(500).json(error));
+    .catch((error) => res.status(500).json(error))
 });
 
 //Allows the deletion of a tag using its 'id' value
