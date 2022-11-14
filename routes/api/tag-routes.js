@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
 // Allows the creation of a new tag
 
 router.put('/:id', async (req, res) => {
-  Tag.update(req.body, {
+  const tagyData = await Tag.update(req.body, {
     where: {
       id: req.params.id,
     }
@@ -63,14 +63,14 @@ router.put('/:id', async (req, res) => {
 // updates a tag by appending its `id` value
 
 router.delete('/:id', async (req, res) => {
-const tagData = await Tag.delete({
+const tagyData = await Tag.destroy({
     where: {
       id: req.params.id,
     }
   })
-    .then((tagData) => {
-      console.log(tagData);
-      res.json(tagData);
+    .then((tagyData) => {
+      console.log(tagyData);
+      res.json(tagyData);
   })
 
     .catch((error) => res.status(500).json(error))

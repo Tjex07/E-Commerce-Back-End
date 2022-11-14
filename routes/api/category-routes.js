@@ -65,7 +65,6 @@ router.delete('/:id', async (req, res) => {
     where: {
       id: req.params.id,
     }
-
   })
     .then((categoryData) => {
       console.log(categoryData);

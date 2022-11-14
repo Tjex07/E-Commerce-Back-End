@@ -38,15 +38,16 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   Product.create(req.body)
-    .then((newProduct) => {
+    .then((Product) => {
       if (req.body.tagIds && req.body.tagIds.length) {
         const prodTagId = req.body.tagIds.map((tag_id) => {
           return {
-            newProduct_id: newProduct.id, tag_id,
+            product_id: product.id, tag_id,
           };
         });
         return ProductTag.bulkCreate(prodTagId);
       }
+      res.status(200).json(Product)
     })
     .then((prodTagId) => res.status(200).json(prodTagId))
     .catch((err) => {
@@ -57,34 +58,34 @@ router.post('/', async (req, res) => {
 
 // Creates a new product that includes an associated product tag
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   Product.update(req.body, {
     where: {
       id: req.params.id,
     },
   })
-    .then((product) => {
+    .then(() => {
       return ProductTag.findAll({ where: { product_id: req.params.id } });
     })
     .then((productTags) => {
-      const productTagIds = productTags.map(({ tag_id }) => tag_id);
-      const newProductTags = req.body.tagIds
-        .filter((tag_id) => !productTagIds.includes(tag_id))
+      const TagIds = productTags.map(({ tag_id }) => tag_id);
+      const newTags = req.body.tagIds
+        .filter((tag_id) => !TagIds.includes(tag_id))
         .map((tag_id) => {
           return {
             product_id: req.params.id, tag_id,
           };
         });
-      const productTagsToRemove = productTags
+      const TagsToDestroy = productTags
         .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
         .map(({ id }) => id);
 
       return Promise.all([
-        ProductTag.destroy({ where: { id: productTagsToRemove } }),
-        ProductTag.bulkCreate(newProductTags),
+        ProductTag.destroy({ where: { id: TagsToDestroy } }),
+        ProductTag.bulkCreate(newTags),
       ]);
     })
-    .then((updatedProductTags) => res.json(updatedProductTags))
+    .then((updatedTags) => res.json(updatedTags))
     .catch((err) => {
       res.status(400).json(err);
     });
