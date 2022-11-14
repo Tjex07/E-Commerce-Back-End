@@ -10,10 +10,8 @@ router.get('/', async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-}
-  // find all categories
-  // be sure to include its associated Products
-);
+})
+// finds all categories and includes its associated Products
 
 router.get('/:id', async (req, res) => {
   try {
@@ -35,6 +33,9 @@ router.get('/:id', async (req, res) => {
 
 });
 
+// find one category by its `id` value and includs its associated Products
+// if category does not a exist a response will be sent with that information
+
 
 router.post('/', async (req, res) => {
   try {
@@ -44,11 +45,7 @@ router.post('/', async (req, res) => {
     res.status(400).json(err);
   }
 });
-
-
-// find one category by its `id` value
-// be sure to include its associated Products
-
+// Allows the creation of a new category
 
 router.put('/:id', async (req, res) => {
   Category.update(req.body, {
@@ -56,23 +53,28 @@ router.put('/:id', async (req, res) => {
       id: req.params.id,
     }
   })
-  .then ((categoryData) => res.status(200).json(categoryData))
-  .catch((error) => res.status(500).json(error));
-  // update a category by its `id` value
+    .then((categoryData) => res.status(200).json(categoryData))
+    .catch((error) => res.status(500).json(error));
+
 });
 
-router.delete('/:id', async(req, res) => {
-  const categoryData = await Category.destroy({ where: {
-   id: req.params.id,
-  }
+// updates a category by appending its `id` value
 
-})
-  .then((categoryData) => {
-    console.log(categoryData);
-    res.json(categoryData);
+router.delete('/:id', async (req, res) => {
+  const categoryData = await Category.destroy({
+    where: {
+      id: req.params.id,
+    }
+
   })
-  
-  .catch((error) => res.status(500).json(error));
+    .then((categoryData) => {
+      console.log(categoryData);
+      res.json(categoryData);
+    })
+
+    .catch((error) => res.status(500).json(error));
 });
+
+//Allows the deletion of a category using its 'id' value
 
 module.exports = router;
